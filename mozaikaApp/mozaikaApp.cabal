@@ -1,6 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.18.1.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
+--
+-- hash: c6fe58fa7d1fee2f632471ad66f1316a19650aed879ee8534f3c200000148744
 
 name:           mozaikaApp
 version:        0.1.0.0
@@ -9,48 +13,52 @@ homepage:       https://github.com/githubuser/mozaikaApp#readme
 bug-reports:    https://github.com/githubuser/mozaikaApp/issues
 author:         Author name here
 maintainer:     example@example.com
-copyright:      2020 Author name here
+copyright:      2021 Author name here
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
-
 extra-source-files:
-    ChangeLog.md
     README.md
+    ChangeLog.md
 
 source-repository head
   type: git
   location: https://github.com/githubuser/mozaikaApp
 
 library
+  exposed-modules:
+      Display
+      Lib
+      Solver
+  other-modules:
+      Paths_mozaikaApp
   hs-source-dirs:
       src
   build-depends:
-      base >= 4.7 && < 5
-  exposed-modules:
-      Lib
-  other-modules:
-      Paths_mozaikaApp
+      base >=4.7 && <5
   default-language: Haskell2010
 
 executable mozaikaApp-exe
   main-is: Main.hs
+  other-modules:
+      Paths_mozaikaApp
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >= 4.7 && < 5
+      base >=4.7 && <5
     , mozaikaApp
   default-language: Haskell2010
 
 test-suite mozaikaApp-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
+  other-modules:
+      Paths_mozaikaApp
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >= 4.7 && < 5
+      base >=4.7 && <5
     , mozaikaApp
   default-language: Haskell2010
