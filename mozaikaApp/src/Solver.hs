@@ -21,6 +21,15 @@ main = do
     putStrLn "Wynik"
     displayResults 10 s3
 
+    let res = solveRest 1 10 table2 s3
+    
+    putStrLn "Wynik"
+    displayResults 10 res
+
+stopCondition table table_result =
+    let check = [ value_out a == value_out b | a<-table, b<-table_result]
+    in and check
+
 -- rozwiazanie prostych przypadkow 0 9 4-rog 6-sciana
 solveBasic :: Int -> [Point] -> [Point] -> [Point]
 solveBasic _ [] [] = []
@@ -55,21 +64,42 @@ solverDiff3 row_length p pc out_table =
             | (diff == (-1, 0)) = [[(-2, -1), (-2, 0), (-2, 1)], [(1, -1), (1, 0), (1, 1)]]
             | (diff == (0, 1)) = [[(-1, 2), (0, 2), (1, 2)], [(-1, -1), (0, -1), (1, -1)]]
             | (diff == (1, 0)) = [[(2, -1), (2, 0), (2, 1)], [(-1, -1), (-1, 0), (-1, 1)]]
-
         points_to_fill
             | (valueDiff pc p == -3) = [returnElements p (coord!!0) row_length out_table, returnElements p (coord!!1) row_length out_table]
             | (valueDiff pc p == 3) = [returnElements p (coord!!1) row_length out_table, returnElements p (coord!!0) row_length out_table]
-        
         t = fillPoints (points_to_fill!!0) row_length 'n' out_table
-
     in fillPoints (points_to_fill!!1) row_length '+' t     
 
+-- nie wychodzi z petli !!!
+solveRest 0 row_length table out_table = out_table
+solveRest run row_length table out_table = 
+    let table_result = solverRest row_length table out_table
+        run
+            | stopCondition out_table table_result = 0 
+            | otherwise = 1
+    in solveRest run row_length table out_table
 
+-- znajdz miejsca dla ktorych poprzednie zmiany uwtorzyły latwe przypadki
+solverRest :: Int -> [Point] -> [Point] -> [Point]
+solverRest _ [] [] = []
+solverRest _ [a] out = out
+solverRest row_length (p:ps) out_table =  
+    let all_neigh = returnElemNeigh p row_length out_table
+        plus_neigh = [ n | n<-all_neigh, value_out n == '+' ]
+        rest_neigh = [ n | n<-all_neigh, value_out n /= '+' && value_out n /= 'n']
+
+        table
+            | (isNumber p && charToInt (value_in p) == length plus_neigh) = fillPoints rest_neigh row_length 'n' out_table
+            | (isNumber p && charToInt (value_in p) - length plus_neigh == length rest_neigh) = fillPoints rest_neigh row_length '+' out_table
+            | otherwise = out_table
+    in solverRest row_length ps table
 
 -- convert char to int
 charToInt :: Char -> Int
 charToInt char = read [char]::Int
 
+-- spr czy punkt posiada cyfrę
+isNumber :: Point -> Bool
 isNumber point = value_in point /= '.' && value_in point /= 'n' && value_in point /= 'n'
 
 -- przypisz pkt zadana wartosc
@@ -79,6 +109,8 @@ fillPoints (x:xs) row_length value table =
     let mod = modifyElemPoint x row_length value table
     in fillPoints xs row_length value mod
 
+-- zwróć rożnicę wartości 2 pkt
+valueDiff :: Point -> Point -> Int
 valueDiff point point2 = charToInt (value_in point) - charToInt (value_in point2)
 
 -- wyszukaj sasiadow zadanego pkt
