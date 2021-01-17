@@ -9,112 +9,61 @@ table2 = [Point {x = 0, y = 0, value_in = '.', value_out = '.'},Point {x = 0, y 
 
 
 -- rozwiaz
--- solve _ [] [] = []
--- solve _ [a] out = out
--- solve row_length (p:ps) out_table = 
---     let table = if value_in p == '0' then 
---             case09 (x p) (y p) row_length '_' out_table 
---         else 
---             if value_in p == '9' then 
---                 case09 (x p) (y p) row_length '+' out_table 
---             else out_table
---     in solve row_length ps table
+    -- let table = if value_in p == '0' then 
+    --         if (returnElemNeigh p row_length out_table)
+    --         case09 (x p) (y p) row_length '_' out_table 
+    --     else 
+    --         if value_in p == '9' then 
+    --             case09 (x p) (y p) row_length '+' out_table 
+    --         else out_table
+    -- let neigh = returnElemNeigh p row_length out_table
+    --     table = case (value_in p) of
+    --         '0' -> if (length (neigh) == 9) then 
+    --             fillPoints neigh row_length '+' out_table
+    -- in solve row_length ps table
 
+main :: IO ()
+main = do
+    let s = solve 10 table2 table2
+    displayResults 10 table2
+    putStrLn ""
+    displayResults 10 s
 
--- przypadek 0 i 9
--- case09 :: Int -> Int -> Int -> Char -> [Point] -> [Point]
--- case09 row col row_length value table = 
---     let point = getElem row col row_length table
---         if 
---     in lower_right
+-- rozwiazanie prostych przypadkow
+solve :: Int -> [Point] -> [Point] -> [Point]
+solve _ [] [] = []
+solve _ [a] out = out
+solve row_length (p:ps) out_table = 
+    let neigh = returnElemNeigh p row_length out_table
+        table
+            | (value_in p == '0') = fillPoints neigh row_length 'n' out_table
+            | (value_in p == '9') = fillPoints neigh row_length '+' out_table
+            | (value_in p == '4' && length neigh == 4) = fillPoints neigh row_length '+' out_table
+            | (value_in p == '6' && length neigh == 6) = fillPoints neigh row_length '+' out_table
+            | otherwise = out_table
+    in solve row_length ps table
 
-fillUpperLeftCorner row col row_length value table = 
-    let middle = modifyElem row col row_length value table
-        right = modifyElem row (col+1) row_length value middle
-        lower = modifyElem (row+1) col row_length value right
-        lower_right = modifyElem (row+1) (col+1) row_length value lower
-    in lower_right
+-- 
+fillPoints :: [Point] -> Int -> Char -> [Point] -> [Point]
+fillPoints [] _ _ table = table
+fillPoints (x:xs) row_length value table = 
+    let mod = modifyElemPoint x row_length value table
+    in fillPoints xs row_length value mod
 
-fillUpperRightCorner row col row_length value table = 
-    let middle = modifyElem row col row_length value table
-        left =  modifyElem row (col-1) row_length value left
-        lower_left = modifyElem (row+1) (col-1) row_length value left
-        lower = modifyElem (row+1) col row_length value lower_left
-    in lower_left
-
-fillLowerLeftCorner row col row_length value table =
-    let middle = modifyElem row col row_length value table
-        upper = modifyElem (row-1) col row_length value middle
-        upper_right = modifyElem (row-1) (col+1) row_length value upper
-        right = modifyElem row (col+1) row_length value upper_right
-    in right
-
-fillLowerRightCorner row col row_length value table =
-    let upper_left = modifyElem (row-1) (col-1) row_length value table
-        upper = modifyElem (row-1) col row_length value upper_left
-        left =  modifyElem row (col-1) row_length value upper
-        middle = modifyElem row col row_length value left
-    in middle
-
-fillLeftSide row col row_length value table = 
-    let upper = modifyElem (row-1) col row_length value table
-        upper_right = modifyElem (row-1) (col+1) row_length value upper
-        right =  modifyElem row (col+1) row_length value upper_right
-        middle = modifyElem row col row_length value right
-        lower = modifyElem (row+1) col row_length value middle
-        lower_right = modifyElem (row+1) (col+1) row_length value lower
-    in lower_right
-
-fillRightSide row col row_length value table = 
-    let upper_left = modifyElem (row-1) (col-1) row_length value table
-        upper = modifyElem (row-1) col row_length value upper_left
-        left =  modifyElem row (col-1) row_length value upper
-        middle = modifyElem row col row_length value left
-        lower_left = modifyElem (row+1) (col-1) row_length value middle
-        lower = modifyElem (row+1) col row_length value lower_left
-    in lower
-
-fillUpperSide row col row_length value table = 
-    let left =  modifyElem row (col-1) row_length value table
-        middle = modifyElem row col row_length value left
-        right = modifyElem row (col+1) row_length value middle
-        lower_left = modifyElem (row+1) (col-1) row_length value right
-        lower = modifyElem (row+1) col row_length value lower_left
-        lower_right = modifyElem (row+1) (col+1) row_length value lower
-    in lower_right
-
-fillLowerSide row col row_length value table = 
-    let upper_left = modifyElem (row-1) (col-1) row_length value table
-        upper = modifyElem (row-1) col row_length value upper_left
-        upper_right = modifyElem (row-1) (col+1) row_length value upper
-        left =  modifyElem row (col-1) row_length value upper_right
-        middle = modifyElem row col row_length value left
-        right = modifyElem row (col+1) row_length value middle
-    in right
-
-fillALLNeigh :: Int -> Int -> Int -> Char -> [Point] -> [Point]
-fillALLNeigh row col row_length value table = 
-    let upper_left = modifyElem (row-1) (col-1) row_length value table
-        upper = modifyElem (row-1) col row_length value upper_left
-        upper_right = modifyElem (row-1) (col+1) row_length value upper
-        left =  modifyElem row (col-1) row_length value upper_right
-        middle = modifyElem row col row_length value left
-        right = modifyElem row (col+1) row_length value middle
-        lower_left = modifyElem (row+1) (col-1) row_length value right
-        lower = modifyElem (row+1) col row_length value lower_left
-        lower_right = modifyElem (row+1) (col+1) row_length value lower
-    in lower
-
+-- wyszukaj sasiadow zadanego pkt
+returnElemNeigh :: Point -> Int -> [Point] -> [Point]
 returnElemNeigh point row_length table= 
     let row = x point
         col = y point
-        coord = [(-1, -1), (0, -1), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        neighbours = [ getElem (row+x) (col+y) row_length table | (x, y)<-coord, isElemValid x y row_length table ]
+        coord = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
+        neighbours = [ getElem (row+x) (col+y) row_length table | (x, y)<-coord, isElemValid (row+x) (col+y) row_length table ]
     in neighbours
 
+-- spr czy pkt istnieje i spelnai warunki
+isElemValid :: Int -> Int -> Int -> [Point] -> Bool
 isElemValid x y row_length table = 
     elem x [0..(row_length-1)] && elem y [0..(row_length-1)] &&
-        value_out (getElem x y row_length table) /= '-'
+        value_out (getElem x y row_length table) /= 'n'
 
 -- przygotuj tablice punktow
 prepTable :: [[Char]] ->[Point]
@@ -155,6 +104,13 @@ modifyElem row col row_length value table =
         modified_point = Point (x point) (y point) (value_in point) value
     in replace pos modified_point table
 
+-- zmodyfikuj punkt
+modifyElemPoint :: Point -> Int -> Char -> [Point] -> [Point]
+modifyElemPoint point row_length value table =
+    let pos = getListPos (x point) (y point) row_length
+        modified_point = Point (x point) (y point) (value_in point) value
+    in replace pos modified_point table
+
 -- get elem value from spec position
 getElem :: Int -> Int -> Int -> [a] -> a
 getElem row col row_length table = 
@@ -181,6 +137,7 @@ printPuzzle (x:xs) = do
     putStrLn y
     printPuzzle xs
 
+-- zamien liste na macierz
 toMatrix :: Int -> [a] -> [[a]]
 toMatrix _ [] = []
 toMatrix row_length table = 
@@ -188,6 +145,7 @@ toMatrix row_length table =
         xs = drop row_length table
     in x : toMatrix row_length xs
 
+-- wyswietl puzzle
 displayResults :: Int -> [Point] -> IO ()
 displayResults row_length table =
     let values_list = [ value_out point | point<-table]

@@ -5,16 +5,14 @@ import Solver
 
 main :: IO ()
 main = do 
-    puzzle <- readPuzzle "puzzles/puzzle01.txt"
+    puzzle <- readPuzzle "puzzles/puzzle02.txt"
     putStrLn "Łamigłówka:"
     printPuzzle puzzle
     print puzzle
 
     let table = prepTable puzzle
 
-    -- print table
-
-    print(getElemValue 1 1 10 table)
+    print table
 
     putStr "finish"
 
