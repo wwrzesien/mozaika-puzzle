@@ -21,7 +21,8 @@ main = do
     let diff_cases = solveDiff3 row_length table basic_cases
     let final_solver = solveRest 1 max_iter row_length table diff_cases
 
+    putStrLn ""
     putStrLn "Wynik"
-    displayResults 10 final_solver
+    displayResults row_length final_solver
 
 
