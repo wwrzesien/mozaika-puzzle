@@ -6,7 +6,10 @@ import Util
 
 main :: IO ()
 main = do 
-    puzzle <- readPuzzle "puzzles/puzzle01.txt"
+    putStrLn "Wpisz nazwę pliku z łamigłówką znajdującego się w katalogu puzzles:"
+    x <- getLine
+    let location="puzzles/"++x
+    puzzle <- readPuzzle location
     putStrLn "Łamigłówka:"
     printPuzzle puzzle
 
