@@ -1,6 +1,11 @@
 module Display where
     
 import System.IO (readFile)
+import Util 
+    ( toMatrix,
+      Point(x, y, value_in, value_out) )
+-- import Point(Point(x, y, value_in, value_out))
+-- data Point = Point { x::Int, y::Int, value_in:: Char, value_out::Char} deriving (Show)
 
 -- wczytaj łamigłówkę z pliku o podanej nazwie
 readPuzzle :: String -> IO [String]
@@ -22,3 +27,12 @@ printPuzzle (x:xs) = do
     let y = insertSignInRow x ' '
     putStrLn y
     printPuzzle xs
+
+-- wyświetl rozwiązanie łamigłówki
+displayResults :: Int -> [Point] -> IO ()
+displayResults row_length table =
+    let values_list = [ value_out point | point<-table]
+        matrix = toMatrix row_length values_list
+    in printPuzzle matrix
+
+
