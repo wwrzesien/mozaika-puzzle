@@ -21,13 +21,13 @@ main = do
     putStrLn "Wynik"
     displayResults 10 s3
 
-    let res = solveRest 1 10 table2 s3
+    let res = solveRest 1 100 10 table2 s3
     
     putStrLn "Wynik"
     displayResults 10 res
 
 stopCondition table table_result =
-    let check = [ value_out a == value_out b | a<-table, b<-table_result]
+    let check = [ value_out a == value_out b | (a, b)<-zip table table_result]
     in and check
 
 -- rozwiazanie prostych przypadkow 0 9 4-rog 6-sciana
@@ -70,14 +70,16 @@ solverDiff3 row_length p pc out_table =
         t = fillPoints (points_to_fill!!0) row_length 'n' out_table
     in fillPoints (points_to_fill!!1) row_length '+' t     
 
--- nie wychodzi z petli !!!
-solveRest 0 row_length table out_table = out_table
-solveRest run row_length table out_table = 
+
+solveRest 0 iter row_length table out_table = out_table
+solveRest _ 0 row_length table out_table = out_table
+solveRest run iter row_length table out_table = 
     let table_result = solverRest row_length table out_table
         run
             | stopCondition out_table table_result = 0 
             | otherwise = 1
-    in solveRest run row_length table out_table
+        n_iter = iter -1
+    in solveRest run n_iter row_length table table_result
 
 -- znajdz miejsca dla ktorych poprzednie zmiany uwtorzyły latwe przypadki
 solverRest :: Int -> [Point] -> [Point] -> [Point]
