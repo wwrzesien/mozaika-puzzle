@@ -4,8 +4,6 @@ import System.IO (readFile)
 import Util 
     ( toMatrix,
       Point(x, y, value_in, value_out) )
--- import Point(Point(x, y, value_in, value_out))
--- data Point = Point { x::Int, y::Int, value_in:: Char, value_out::Char} deriving (Show)
 
 -- wczytaj łamigłówkę z pliku o podanej nazwie
 readPuzzle :: String -> IO [String]
