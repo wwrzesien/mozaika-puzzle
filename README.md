@@ -1,4 +1,4 @@
-# mozaikaPuzzle
+# mozaika-puzzle
 Application to solve "Mozaika" puzzle.
 
 ## Preview
